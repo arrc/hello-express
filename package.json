@@ -4,6 +4,9 @@
   "description": "Node.js on Docker",
   "author": "Naveen Kumar <naveen@arrc.in>",
   "main": "server.js",
+  "repository": {
+    "url": "https://github.com/arrc/hello-express"
+  },
   "url": "https://github.com/arrc/hello-express",
   "license": "UNLICENSED",
   "scripts": {
