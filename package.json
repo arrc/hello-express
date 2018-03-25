@@ -1,5 +1,5 @@
 {
-  "name": "hello_express",
+  "name": "hello-express",
   "version": "1.0.0",
   "description": "Node.js on Docker",
   "author": "Naveen Kumar <naveen@arrc.in>",
