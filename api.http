@@ -1,0 +1,20 @@
+@host = localhost:3000
+
+### Home
+GET /
+Host: {{host}}
+
+### Hello
+GET /hello
+    ?name=arrC
+Host: {{host}}
+
+### Welcome
+POST /welcome
+Host: {{host}}
+content-type: application/json
+
+{
+    "name": "arrC"
+}
+
