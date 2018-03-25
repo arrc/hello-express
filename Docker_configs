@@ -1,0 +1,70 @@
+#
+# ---- Base Node ----
+FROM alpine:3.5 AS base
+# install node
+RUN apk add --no-cache nodejs-current tini
+# set working directory
+WORKDIR /root/chat
+# Set tini as entrypoint
+ENTRYPOINT ["/sbin/tini", "--"]
+# copy project file
+COPY package*.json .
+# COPY package*.json ./
+ 
+#
+# ---- Dependencies ----
+FROM base AS dependencies
+# install node packages
+RUN npm set progress=false && npm config set depth 0
+RUN npm install --only=production 
+# copy production node_modules aside
+RUN cp -R node_modules prod_node_modules
+# install ALL node_modules, including 'devDependencies'
+RUN npm install
+ 
+#
+# ---- Release ----
+FROM base AS release
+# copy production node_modules
+COPY --from=dependencies /root/chat/prod_node_modules ./node_modules
+# copy app sources
+COPY . .
+# expose port and define CMD
+EXPOSE 5000
+CMD npm run start
+
+# docker --host=:23751 build -t local/chat:multi-stage .
+
+# =========  =========  ========= =========  ADV ADV ADV =========  =========  =========  =========  
+
+# ---- Base Node ----
+FROM node:carbon AS base
+# Create app directory
+WORKDIR /app
+
+# ---- Dependencies ----
+FROM base AS dependencies  
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+# install app dependencies including 'devDependencies'
+RUN npm install
+
+# # ---- Copy Files/Build ----
+# FROM dependencies AS build  
+# WORKDIR /app
+# COPY src /app
+# # Build react/vue/angular bundle static files
+# # RUN npm run build
+
+# --- Release with Alpine ----
+FROM node:8.9-alpine AS release  
+# Create app directory
+WORKDIR /app
+# optional
+# RUN npm -g install serve
+COPY --from=dependencies /app/package.json ./
+# Install app dependencies
+RUN npm install --only=production
+COPY --from=build /app ./
+#CMD ["serve", "-s", "dist", "-p", "8080"]
+CMD ["node", "server.js"]

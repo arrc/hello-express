@@ -14,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Home
 app.get('/', (req, res) => {
+  console.log("Home")
   res.status(200).json({ 
     message: "Hello world!"
   })
@@ -21,11 +22,13 @@ app.get('/', (req, res) => {
 
 // Hello
 app.get('/hello', (req, res) => {
+  console.log("Hello", req.query)
   res.status(200).json({ message: `Hello ${req.query.name || "stranger"}!` })
 })
 
 // Welcome
 app.post('/welcome', (req, res) => {
+  console.log("Welcome", req.body)
   res.status(200).json({ message: `Welcome ${req.body.name || "stranger"}!` })
 })
 
